@@ -16,29 +16,37 @@ const (
 	Divflat_a
 	Minus_a
 	Mod_a
+	Mult_Eq_a
+	Div_Eq_a
+	Plus_Eq_a
+	Pow_Eq_a
+	Divflat_Eq_a
+	Minus_Eq_a
+	Mod_Eq_a
 	Inc_a
 	Decr_a
-	Rparenth
-	Lparenth
-	Eq
 	Gthan_l
 	Lthan_l
 	GthanEq_l
 	LthanEq_l
+	Bang_l
 	Neq_l
-	Pipe
-	And
 	Eq_l
 	And_l
 	Or_l
+	Eq
 	Arrow
+	//
+	Pipe
+	And
 	Colon
 	Comma
-	Bang_l
 	Number
 	Ident
 	Dollar
 	Semicolon
+	Rparenth
+	Lparenth
 	Rbrack
 	Rbrace
 	Lbrack
@@ -47,6 +55,7 @@ const (
 	Qmark
 	Slash
 	Point
+	//
 	In_k
 	Num_k
 	Str_k
@@ -63,5 +72,6 @@ const (
 	Case_k
 	Default_k
 	End_k
+	//
 	EOF
 )

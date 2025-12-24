@@ -44,14 +44,26 @@ func (input *Input) CreateTokens() TokenList {
 
 		case tok == '*':
 			if input.peekNext(i, '*') {
-				tl.appendSymbol(Pow_a, "**", &i)
+				if input.peekNext(i+1, '=') {
+					tl.appendSymbol(Pow_Eq_a, "**=", &i)
+				} else {
+					tl.appendSymbol(Pow_a, "**", &i)
+				}
+			} else if input.peekNext(i, '=') {
+				tl.appendSymbol(Mult_Eq_a, "*=", &i)
 			} else {
 				tl.appendSymbol(Mult_a, "*", &i)
 			}
 
 		case tok == '/':
 			if input.peekNext(i, '/') {
-				tl.appendSymbol(Divflat_a, "//", &i)
+				if input.peekNext(i+1, '=') {
+					tl.appendSymbol(Divflat_Eq_a, "//=", &i)
+				} else {
+					tl.appendSymbol(Divflat_a, "//", &i)
+				}
+			} else if input.peekNext(i, '=') {
+				tl.appendSymbol(Div_Eq_a, "/=", &i)
 			} else {
 				tl.appendSymbol(Div_a, "/", &i)
 			}
@@ -59,6 +71,8 @@ func (input *Input) CreateTokens() TokenList {
 		case tok == '+':
 			if input.peekNext(i, '+') {
 				tl.appendSymbol(Inc_a, "++", &i)
+			} else if input.peekNext(i, '=') {
+				tl.appendSymbol(Plus_Eq_a, "+=", &i)
 			} else {
 				tl.appendSymbol(Plus_a, "+", &i)
 			}
@@ -68,12 +82,18 @@ func (input *Input) CreateTokens() TokenList {
 				tl.appendSymbol(Decr_a, "--", &i)
 			} else if input.peekNext(i, '>') {
 				tl.appendSymbol(Arrow, "->", &i)
+			} else if input.peekNext(i, '=') {
+				tl.appendSymbol(Minus_Eq_a, "-=", &i)
 			} else {
 				tl.appendSymbol(Minus_a, "-", &i)
 			}
 
 		case tok == '%':
-			tl.appendSymbol(Mod_a, "%", &i)
+			if input.peekNext(i, '=') {
+				tl.appendSymbol(Mod_Eq_a, "%=", &i)
+			} else {
+				tl.appendSymbol(Mod_a, "%", &i)
+			}
 
 		case tok == '(':
 			tl.appendSymbol(Lparenth, "(", &i)
@@ -113,6 +133,12 @@ func (input *Input) CreateTokens() TokenList {
 			} else {
 				tl.appendSymbol(Gthan_l, ">", &i)
 			}
+		case tok == '=':
+			if input.peekNext(i, '=') {
+				tl.appendSymbol(Eq_l, "==", &i)
+			} else {
+				tl.appendSymbol(Eq, "=", &i)
+			}
 		case tok == ',':
 			tl.appendSymbol(Comma, ",", &i)
 		case tok == '~':
@@ -126,7 +152,7 @@ func (input *Input) CreateTokens() TokenList {
 		case tok == ']':
 			tl.appendSymbol(Rbrack, "]", &i)
 		case tok == '{':
-			tl.appendSymbol(Lbrace, "[", &i)
+			tl.appendSymbol(Lbrace, "{", &i)
 		case tok == '}':
 			tl.appendSymbol(Rbrace, "}", &i)
 		case tok == '$':
@@ -136,7 +162,7 @@ func (input *Input) CreateTokens() TokenList {
 		case tok == '?':
 			tl.appendSymbol(Qmark, "?", &i)
 
-		// Unimplemented
+		// TODO: Unimplemented -> Implement this
 		case tok == '\'', tok == '"', tok == '`':
 			continue
 

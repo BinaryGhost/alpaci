@@ -58,6 +58,14 @@ func TestLexer(t *testing.T) {
 		},
 	}
 
+	test_long_op := test{
+		input: &Input{'*', '*', '='},
+		expect: TokenList{
+			Token{Type: Pow_Eq_a, Value: "**=", Column: 0},
+			Token{Type: EOF, Value: "", Column: 3},
+		},
+	}
+
 	t.Run("Validate lexer-expectations", func(t *testing.T) {
 		assert.Equal(t, test_number.expect, test_number.input.CreateTokens(), "Lexing numbers failed")
 		assert.Equal(t, test_number2.expect, test_number2.input.CreateTokens(), "Lexing decremental-numbers failed")
@@ -75,5 +83,6 @@ func TestLexer(t *testing.T) {
 		//
 
 		assert.Equal(t, test_ident.expect, test_ident.input.CreateTokens(), "Ident/Keyword failed")
+		assert.Equal(t, test_long_op.expect, test_long_op.input.CreateTokens(), "Longer token failed")
 	})
 }
