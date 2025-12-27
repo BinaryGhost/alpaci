@@ -1,6 +1,9 @@
 package lexing
 
-import "unicode"
+import (
+	"errors"
+	"unicode"
+)
 
 type Input []rune
 type TokenList []Token
@@ -12,6 +15,22 @@ func (input *Input) peekNext(index int, expected rune) bool {
 func (tlist *TokenList) appendSymbol(ttyp TokType, value string, index *int) {
 	*tlist = append(*tlist, Token{Type: ttyp, Value: value, Column: *index})
 	*index += len(value)
+}
+
+func (tl *TokenList) Current() (Token, error) {
+	if len(*tl) == 0 {
+		return Token{}, errors.New("Tried to see current Token, but TokenList is already empty")
+	}
+	return (*tl)[0], nil
+}
+
+func (tl *TokenList) Next() error {
+	if len(*tl) == 0 {
+		return errors.New("Tried to advance, but TokenList is already empty")
+	}
+
+	*tl = (*tl)[1:]
+	return nil
 }
 
 func (input *Input) CreateTokens() TokenList {
@@ -168,7 +187,7 @@ func (input *Input) CreateTokens() TokenList {
 
 		case unicode.IsDigit(tok):
 			start := i
-			for i < ilen && unicode.IsDigit((*input)[i]) {
+			for i < ilen && (unicode.IsDigit((*input)[i]) || (*input)[i] == '_') {
 				i++
 			}
 			number := string((*input)[start:i])
