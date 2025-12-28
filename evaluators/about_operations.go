@@ -148,12 +148,173 @@ func Power(a, b any) {}
 func Increment(a any) {}
 func Decrement(a any) {}
 
-func And(a, b any)               {}
-func Or(a, b any)                {}
-func GreaterThan(a, b any)       {}
-func LesserThan(a, b any)        {}
-func Equals(a, b any)            {}
-func GreaterThanEquals(a, b any) {}
-func LesserThanEquals(a, b any)  {}
-func Not(a any)                  {}
-func NotEquals(a, b any)         {}
+func tryMakeFalsy(val any) bool {
+	if val == "" {
+		return false
+	} else if val == 0 || val == 0.0 {
+		return false
+	} else {
+		return true
+	}
+}
+
+func And(a, b any) bool {
+	return tryMakeFalsy(a) && tryMakeFalsy(b)
+}
+
+func Or(a, b any) bool {
+	return tryMakeFalsy(a) || tryMakeFalsy(b)
+}
+
+func GreaterThan(a, b any) bool {
+	switch a_val := a.(type) {
+	case int:
+		if b_val, ok := b.(int); ok {
+			return a_val > b_val
+		}
+		if b_val, ok := b.(float64); ok {
+			return float64(a_val) > b_val
+		}
+
+		panic("")
+	case float64:
+		if b_val, ok := b.(float64); ok {
+			return a_val > b_val
+		}
+		if b_val, ok := b.(int); ok {
+			return a_val > float64(b_val)
+		}
+
+		panic("")
+	default:
+		panic("")
+	}
+}
+func LesserThan(a, b any) bool {
+	switch a_val := a.(type) {
+	case int:
+		if b_val, ok := b.(int); ok {
+			return a_val < b_val
+		}
+		if b_val, ok := b.(float64); ok {
+			return float64(a_val) < b_val
+		}
+
+		panic("")
+	case float64:
+		if b_val, ok := b.(float64); ok {
+			return a_val < b_val
+		}
+		if b_val, ok := b.(int); ok {
+			return a_val < float64(b_val)
+		}
+
+		panic("")
+	default:
+		panic("")
+	}
+}
+
+func Equals(a, b any) bool {
+
+	switch a_val := a.(type) {
+	case int:
+		if b_val, ok := b.(int); ok {
+			return a_val == b_val
+		}
+		if b_val, ok := b.(float64); ok {
+			return float64(a_val) == b_val
+		}
+
+		return a == b
+	case float64:
+		if b_val, ok := b.(float64); ok {
+			return a_val == b_val
+		}
+		if b_val, ok := b.(int); ok {
+			return a_val == float64(b_val)
+		}
+
+		return a == b
+	default:
+		return a == b
+	}
+}
+func GreaterThanEquals(a, b any) bool {
+
+	switch a_val := a.(type) {
+	case int:
+		if b_val, ok := b.(int); ok {
+			return a_val >= b_val
+		}
+		if b_val, ok := b.(float64); ok {
+			return float64(a_val) >= b_val
+		}
+
+		panic("")
+	case float64:
+		if b_val, ok := b.(float64); ok {
+			return a_val >= b_val
+		}
+		if b_val, ok := b.(int); ok {
+			return a_val >= float64(b_val)
+		}
+
+		panic("")
+	default:
+		panic("")
+	}
+}
+func LesserThanEquals(a, b any) bool {
+
+	switch a_val := a.(type) {
+	case int:
+		if b_val, ok := b.(int); ok {
+			return a_val <= b_val
+		}
+		if b_val, ok := b.(float64); ok {
+			return float64(a_val) <= b_val
+		}
+
+		panic("")
+	case float64:
+		if b_val, ok := b.(float64); ok {
+			return a_val <= b_val
+		}
+		if b_val, ok := b.(int); ok {
+			return a_val <= float64(b_val)
+		}
+
+		panic("")
+	default:
+		panic("")
+	}
+}
+
+func Not(a any) {}
+
+func NotEquals(a, b any) bool {
+
+	switch a_val := a.(type) {
+	case int:
+		if b_val, ok := b.(int); ok {
+			return a_val != b_val
+		}
+		if b_val, ok := b.(float64); ok {
+			return float64(a_val) != b_val
+		}
+
+		return a != b
+	case float64:
+		if b_val, ok := b.(float64); ok {
+			return a_val != b_val
+		}
+		if b_val, ok := b.(int); ok {
+			return a_val != float64(b_val)
+		}
+
+		return a != b
+	default:
+		return a != b
+	}
+}

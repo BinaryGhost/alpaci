@@ -1,7 +1,6 @@
 package evaluators
 
 import (
-	"fmt"
 	"github.com/BinaryGhost/alpaci/lexing"
 )
 
@@ -13,33 +12,10 @@ type Expression struct {
 	Atom     Atom
 }
 
-func operate_on(a any, b any) any {
-	switch v1 := a.(type) {
-	case string:
-		if v2, ok := b.(string); ok {
-			return v1 + v2
-		}
-	case int:
-		if v2, ok := b.(int); ok {
-			return v1 + v2 // Add integers
-		} else if v2, ok := b.(float64); ok {
-			return float64(v1) + v2
-
-		}
-	case float64:
-		if v2, ok := b.(float64); ok {
-			return v1 + v2 // Add floats
-		} else if v2, ok := b.(int); ok {
-			return v1 + float64(v2)
-		}
-	}
-
-	return nil
-}
-
 func Eval(e *Expression) any {
 	// Since an atom can also be an expression, but with no kind
 	if e.Kind == 0 {
+		// TODO: Handle booleans and strings and identifiers
 		return e.Atom.Val
 	}
 
@@ -55,6 +31,30 @@ func Eval(e *Expression) any {
 		return Divide(left, right)
 	case lexing.Divflat_a:
 		return DivideFlat(left, right)
+	case lexing.Pow_a:
+		// return Power(left, right)
+	case lexing.Mod_a:
+		// return MOdulo(left, right)
+	case lexing.Inc_a:
+		// return Increment(...)
+	case lexing.Decr_a:
+		// return Decrement(...)
+	//
+	case lexing.Gthan_l:
+		return GreaterThan(left, right)
+	case lexing.Lthan_l:
+		return LesserThan(left, right)
+	case lexing.GthanEq_l:
+		return GreaterThanEquals(left, right)
+	case lexing.LthanEq_l:
+		return LesserThanEquals(left, right)
+	case lexing.Bang_l:
+		// return Bang(...)
+	case lexing.Neq_l:
+		return NotEquals(left, right)
+	case lexing.Eq_l:
+		return Equals(left, right)
+
 	default:
 		panic("Unknown operator '" + e.Operator.Val + "'")
 	}
