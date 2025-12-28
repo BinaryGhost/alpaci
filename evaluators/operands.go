@@ -3,7 +3,7 @@ package evaluators
 import "github.com/BinaryGhost/alpaci/lexing"
 
 type Operator struct {
-	Val    any
+	Val    string
 	Type   lexing.TokType
 	Column int
 }

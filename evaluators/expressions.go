@@ -1,6 +1,9 @@
 package evaluators
 
-import "github.com/BinaryGhost/alpaci/lexing"
+import (
+	"fmt"
+	"github.com/BinaryGhost/alpaci/lexing"
+)
 
 type Expression struct {
 	Kind     ExpressionKind
@@ -10,7 +13,52 @@ type Expression struct {
 	Atom     Atom
 }
 
-func (e *Expression) Eval() {}
+func operate_on(a any, b any) any {
+	switch v1 := a.(type) {
+	case string:
+		if v2, ok := b.(string); ok {
+			return v1 + v2
+		}
+	case int:
+		if v2, ok := b.(int); ok {
+			return v1 + v2 // Add integers
+		} else if v2, ok := b.(float64); ok {
+			return float64(v1) + v2
+
+		}
+	case float64:
+		if v2, ok := b.(float64); ok {
+			return v1 + v2 // Add floats
+		} else if v2, ok := b.(int); ok {
+			return v1 + float64(v2)
+		}
+	}
+
+	return nil
+}
+
+func Eval(e *Expression) any {
+	// Since an atom can also be an expression, but with no kind
+	if e.Kind == 0 {
+		return e.Atom.Val
+	}
+
+	left := Eval(e.Left)
+	right := Eval(e.Right)
+
+	switch e.Operator.Type {
+	case lexing.Plus_a:
+		return Plus(left, right)
+	case lexing.Mult_a:
+		return Multiply(left, right)
+	case lexing.Div_a:
+		return Divide(left, right)
+	case lexing.Divflat_a:
+		return DivideFlat(left, right)
+	default:
+		panic("Unknown operator '" + e.Operator.Val + "'")
+	}
+}
 
 func ParseExpression(tl *lexing.TokenList, min_bp int) Expression {
 	var lhs Expression
