@@ -1,6 +1,8 @@
 package evaluators
 
-import "github.com/BinaryGhost/alpaci/lexing"
+import (
+	"github.com/BinaryGhost/alpaci/lexing"
+)
 
 type Operator struct {
 	Val    string
@@ -20,23 +22,23 @@ const (
 	Prefix
 )
 
-func GetPrefixBindingPower(op lexing.TokType) (int, int) {
-	switch op {
+func GetPrefixBindingPower(op lexing.Token) (int, int) {
+	switch op.Type {
 	case lexing.Plus_a, lexing.Minus_a:
 		return EMPTY, 5
 	default:
-		panic("Bad operator")
+		panic("Bad prefix-operator for " + lexing.TokenToString(op))
 	}
 }
 
-func GetInfixBindingPower(op lexing.TokType) (int, int) {
-	switch op {
+func GetInfixBindingPower(op lexing.Token) (int, int) {
+	switch op.Type {
 	case lexing.Plus_a, lexing.Minus_a:
 		return 1, 2
 	case lexing.Div_a, lexing.Mult_a:
 		return 3, 4
 	default:
-		panic("Bad operator")
+		panic("Bad infix-operator for " + lexing.TokenToString(op))
 	}
 }
 

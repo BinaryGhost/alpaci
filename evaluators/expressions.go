@@ -1,6 +1,7 @@
 package evaluators
 
 import (
+	"fmt"
 	"github.com/BinaryGhost/alpaci/lexing"
 )
 
@@ -73,16 +74,17 @@ func ParseExpression(tl *lexing.TokenList, min_bp int) Expression {
 	if err != nil {
 		panic(err)
 	}
+	fmt.Printf("debug: tok -> %s, prec -> %d \n", lexing.TokenToString(first_tok), min_bp)
 
 	switch first_tok.Type {
+	case lexing.EOF:
+		break
 	case lexing.Ident:
 		lhs = Expression{Atom: MakeIdentAtom(tl)}
-		tl.Next()
 	case lexing.Number:
 		lhs = Expression{Atom: MakeNumberAtom(tl)}
-		tl.Next()
 	case lexing.Lparenth:
-		tl.Next()
+		// tl.Next()
 
 		lhs = ParseExpression(tl, 0)
 		if tok, err := tl.Current(); err != nil || tok.Type != lexing.Rparenth {
@@ -91,7 +93,7 @@ func ParseExpression(tl *lexing.TokenList, min_bp int) Expression {
 
 		tl.Next()
 	case lexing.Plus_a, lexing.Minus_a, lexing.Bang_l:
-		_, r_bp := GetPrefixBindingPower(first_tok.Type)
+		_, r_bp := GetPrefixBindingPower(first_tok)
 		rhs := ParseExpression(tl, r_bp)
 
 		op := Operator{
@@ -112,15 +114,20 @@ func ParseExpression(tl *lexing.TokenList, min_bp int) Expression {
 	}
 
 	for {
-		var op Operator
 		op_tok, err := tl.Current()
 		if err != nil {
 			panic(err)
 		}
+		op := Operator{
+			Column: op_tok.Column,
+			Type:   op_tok.Type,
+			Val:    op_tok.Value,
+		}
+		fmt.Printf("debug-op: '%s' \n", lexing.TokTypeAsString(op_tok.Type))
 
-		op.Column = op_tok.Column
-		op.Type = op_tok.Type
-		op.Val = op_tok.Value
+		if op_tok.Type == lexing.EOF {
+			break
+		}
 
 		if l_bp, _ := GetPostfixBindingPower(op_tok.Type); IsPostfixOp(op_tok.Type) {
 			if l_bp < min_bp {
@@ -136,12 +143,7 @@ func ParseExpression(tl *lexing.TokenList, min_bp int) Expression {
 			continue
 		}
 
-		// if !IsInfixOp(op_tok.Type) {
-		// 	break
-		// }
-		//
-
-		l_bp, r_bp := GetInfixBindingPower(op_tok.Type)
+		l_bp, r_bp := GetInfixBindingPower(op_tok)
 		if l_bp < min_bp {
 			break
 		}
@@ -158,7 +160,18 @@ func ParseExpression(tl *lexing.TokenList, min_bp int) Expression {
 		}
 	}
 
+	fmt.Println("debug-lhs: " + lhs.String())
 	return lhs
 }
 
-func (e *Expression) String() string { return "" }
+func (e *Expression) String() string {
+	if e.Kind == 0 {
+		return fmt.Sprintf("%v", e.Atom.Val)
+	}
+
+	op := e.Operator.Val
+	left := e.Left.String()
+	right := e.Right.String()
+
+	return fmt.Sprintf("(%s %s %s)", op, left, right)
+}

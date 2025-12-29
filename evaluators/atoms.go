@@ -19,6 +19,7 @@ func MakeIdentAtom(tl *lexing.TokenList) Atom {
 	if err != nil {
 		panic(err)
 	}
+	tl.Next()
 
 	// TODO
 	// Is 1 for now, but val would be the variable name

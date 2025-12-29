@@ -246,6 +246,6 @@ func (input *Input) CreateTokens() TokenList {
 		}
 	}
 
-	tl = append(tl, Token{Type: EOF, Value: "", Column: i})
+	tl = append(tl, Token{Type: EOF, Value: "EOF", Column: i})
 	return tl
 }

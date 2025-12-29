@@ -24,28 +24,28 @@ func TestLexer(t *testing.T) {
 		expect: TokenList{
 			Token{Type: Decr_a, Value: "--", Column: 0},
 			Token{Type: Number, Value: "123", Column: 2},
-			Token{Type: EOF, Value: "", Column: 5},
+			Token{Type: EOF, Value: "EOF", Column: 5},
 		},
 	}
 
 	test_comment1 := test{
 		input: &Input{'#', ' ', 'h', 'e', 'l', 'l', 'o', ' ', '#'},
 		expect: TokenList{
-			Token{Type: EOF, Value: "", Column: 8},
+			Token{Type: EOF, Value: "EOF", Column: 8},
 		},
 	}
 
 	test_comment2 := test{
 		input: &Input{'#', '.', ' ', 'h', 'e', 'l', 'l', 'o', ' '},
 		expect: TokenList{
-			Token{Type: EOF, Value: "", Column: 8},
+			Token{Type: EOF, Value: "EOF", Column: 8},
 		},
 	}
 
 	test_comment3 := test{
 		input: &Input{'#', '.', ' ', 'h', 'e', 'l', 'l', 'o', ' ', '#'},
 		expect: TokenList{
-			Token{Type: EOF, Value: "", Column: 10},
+			Token{Type: EOF, Value: "EOF", Column: 10},
 		},
 	}
 
@@ -54,7 +54,7 @@ func TestLexer(t *testing.T) {
 		expect: TokenList{
 			Token{Type: Ident, Value: "ab9", Column: 0},
 			Token{Type: If_k, Value: "if", Column: 4},
-			Token{Type: EOF, Value: "", Column: 6},
+			Token{Type: EOF, Value: "EOF", Column: 6},
 		},
 	}
 
@@ -62,7 +62,7 @@ func TestLexer(t *testing.T) {
 		input: &Input{'*', '*', '='},
 		expect: TokenList{
 			Token{Type: Pow_Eq_a, Value: "**=", Column: 0},
-			Token{Type: EOF, Value: "", Column: 3},
+			Token{Type: EOF, Value: "EOF", Column: 3},
 		},
 	}
 
