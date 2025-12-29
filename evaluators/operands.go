@@ -40,11 +40,24 @@ func GetInfixBindingPower(op lexing.TokType) (int, int) {
 	}
 }
 
-func IsInfixOp(op lexing.TokType) bool {
+func GetPostfixBindingPower(op lexing.TokType) (int, int) {
 	switch op {
-	case lexing.Div_a, lexing.Mult_a, lexing.Mod_a, lexing.Plus_a, lexing.Minus_a:
-		return true
+	case lexing.Decr_a, lexing.Inc_a:
+		return 7, EMPTY
 	default:
-		return false
+		return EMPTY, EMPTY
 	}
 }
+
+func IsPostfixOp(op lexing.TokType) bool {
+	return op == lexing.Inc_a || op == lexing.Decr_a
+}
+
+// func IsInfixOp(op lexing.TokType) bool {
+// 	switch op {
+// 	case lexing.Div_a, lexing.Mult_a, lexing.Mod_a, lexing.Plus_a, lexing.Minus_a:
+// 		return true
+// 	default:
+// 		return false
+// 	}
+// }

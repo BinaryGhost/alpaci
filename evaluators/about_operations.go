@@ -58,6 +58,30 @@ func Minus(a, b any) any {
 	}
 }
 
+func UnaryMinus(a any) any {
+	if a_val, ok := a.(int); ok {
+		return a_val * -1
+	}
+
+	if a_val, ok := a.(float64); ok {
+		return a_val * -1
+	}
+
+	panic("")
+}
+
+func UnaryPlus(a any) any {
+	if a_val, ok := a.(int); ok {
+		return a_val * 1
+	}
+
+	if a_val, ok := a.(float64); ok {
+		return a_val * 1
+	}
+
+	panic("")
+}
+
 func Multiply(a, b any) any {
 	switch a_val := a.(type) {
 	case int:
@@ -83,7 +107,7 @@ func Multiply(a, b any) any {
 	}
 }
 
-func Divide(a, b any) float64 {
+func Divide(a, b any) any {
 	if b == 0 || b == 0.0 {
 		panic("")
 	}
@@ -112,7 +136,7 @@ func Divide(a, b any) float64 {
 	}
 }
 
-func DivideFlat(a, b any) float64 {
+func DivideFlat(a, b any) any {
 	if b == 0 || b == 0.0 {
 		panic("")
 	}
@@ -141,32 +165,93 @@ func DivideFlat(a, b any) float64 {
 	}
 }
 
-func Modulo(a, b any) {}
+func Modulo(a, b any) any {
+	if b == 0 || b == 0.0 {
+		panic("")
+	}
 
-func Power(a, b any) {}
+	switch a_val := a.(type) {
+	case int:
+		if b_val, ok := b.(int); ok {
+			return a_val % b_val
+		}
 
-func Increment(a any) {}
-func Decrement(a any) {}
+		panic("")
+	default:
+		panic("")
+	}
+}
+
+func Power(a, b any) any {
+	switch a_val := a.(type) {
+	case int:
+		if b_val, ok := b.(int); ok {
+			return math.Pow(float64(a_val), float64(b_val))
+		}
+		if b_val, ok := b.(float64); ok {
+			return math.Pow(float64(a_val), b_val)
+		}
+
+		panic("")
+	case float64:
+		if b_val, ok := b.(float64); ok {
+			return math.Pow(a_val, b_val)
+		}
+		if b_val, ok := b.(int); ok {
+			return math.Pow(a_val, float64(b_val))
+		}
+
+		panic("")
+	default:
+		panic("")
+	}
+}
+
+func Increment(a any) any {
+	if a_val, ok := a.(int); ok {
+		return a_val + 1
+	}
+
+	if a_val, ok := a.(float64); ok {
+		return a_val + 1
+	}
+
+	panic("")
+}
+
+func Decrement(a any) any {
+	if a_val, ok := a.(int); ok {
+		return a_val - 1
+	}
+
+	if a_val, ok := a.(float64); ok {
+		return a_val - 1
+	}
+
+	panic("")
+}
 
 func tryMakeFalsy(val any) bool {
 	if val == "" {
 		return false
 	} else if val == 0 || val == 0.0 {
 		return false
+	} else if vl, ok := val.(bool); ok {
+		return vl
 	} else {
 		return true
 	}
 }
 
-func And(a, b any) bool {
+func And(a, b any) any {
 	return tryMakeFalsy(a) && tryMakeFalsy(b)
 }
 
-func Or(a, b any) bool {
+func Or(a, b any) any {
 	return tryMakeFalsy(a) || tryMakeFalsy(b)
 }
 
-func GreaterThan(a, b any) bool {
+func GreaterThan(a, b any) any {
 	switch a_val := a.(type) {
 	case int:
 		if b_val, ok := b.(int); ok {
@@ -190,7 +275,7 @@ func GreaterThan(a, b any) bool {
 		panic("")
 	}
 }
-func LesserThan(a, b any) bool {
+func LesserThan(a, b any) any {
 	switch a_val := a.(type) {
 	case int:
 		if b_val, ok := b.(int); ok {
@@ -215,8 +300,7 @@ func LesserThan(a, b any) bool {
 	}
 }
 
-func Equals(a, b any) bool {
-
+func Equals(a, b any) any {
 	switch a_val := a.(type) {
 	case int:
 		if b_val, ok := b.(int); ok {
@@ -240,8 +324,7 @@ func Equals(a, b any) bool {
 		return a == b
 	}
 }
-func GreaterThanEquals(a, b any) bool {
-
+func GreaterThanEquals(a, b any) any {
 	switch a_val := a.(type) {
 	case int:
 		if b_val, ok := b.(int); ok {
@@ -265,8 +348,7 @@ func GreaterThanEquals(a, b any) bool {
 		panic("")
 	}
 }
-func LesserThanEquals(a, b any) bool {
-
+func LesserThanEquals(a, b any) any {
 	switch a_val := a.(type) {
 	case int:
 		if b_val, ok := b.(int); ok {
@@ -291,10 +373,14 @@ func LesserThanEquals(a, b any) bool {
 	}
 }
 
-func Not(a any) {}
+func Not(a any) any {
+	if a_val, ok := a.(bool); ok {
+		return !a_val
+	}
+	panic("")
+}
 
-func NotEquals(a, b any) bool {
-
+func NotEquals(a, b any) any {
 	switch a_val := a.(type) {
 	case int:
 		if b_val, ok := b.(int); ok {
