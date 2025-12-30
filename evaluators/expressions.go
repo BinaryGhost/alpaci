@@ -70,11 +70,12 @@ func Eval(e *Expression) any {
 
 func ParseExpression(tl *lexing.TokenList, min_bp int) Expression {
 	var lhs Expression
+
 	first_tok, err := tl.Current()
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("debug: tok -> %s, prec -> %d \n", lexing.TokenToString(first_tok), min_bp)
+	// fmt.Printf("debug: tok -> %s, prec -> %d \n", lexing.TokenToString(first_tok), min_bp)
 
 	switch first_tok.Type {
 	case lexing.EOF:
@@ -84,7 +85,7 @@ func ParseExpression(tl *lexing.TokenList, min_bp int) Expression {
 	case lexing.Number:
 		lhs = Expression{Atom: MakeNumberAtom(tl)}
 	case lexing.Lparenth:
-		// tl.Next()
+		tl.Next()
 
 		lhs = ParseExpression(tl, 0)
 		if tok, err := tl.Current(); err != nil || tok.Type != lexing.Rparenth {
@@ -108,7 +109,6 @@ func ParseExpression(tl *lexing.TokenList, min_bp int) Expression {
 			Right:    &rhs,
 		}
 		tl.Next()
-
 	default:
 		panic("Bad token")
 	}
@@ -118,12 +118,7 @@ func ParseExpression(tl *lexing.TokenList, min_bp int) Expression {
 		if err != nil {
 			panic(err)
 		}
-		op := Operator{
-			Column: op_tok.Column,
-			Type:   op_tok.Type,
-			Val:    op_tok.Value,
-		}
-		fmt.Printf("debug-op: '%s' \n", lexing.TokTypeAsString(op_tok.Type))
+		// fmt.Printf("debug-op: '%s' \n", lexing.TokTypeAsString(op_tok.Type))
 
 		if op_tok.Type == lexing.EOF {
 			break
@@ -136,9 +131,13 @@ func ParseExpression(tl *lexing.TokenList, min_bp int) Expression {
 			tl.Next()
 
 			lhs = Expression{
-				Kind:     Postix,
-				Operator: op,
-				Left:     &lhs,
+				Kind: Postfix,
+				Operator: Operator{
+					Column: op_tok.Column,
+					Type:   op_tok.Type,
+					Val:    op_tok.Value,
+				},
+				Left: &lhs,
 			}
 			continue
 		}
@@ -152,26 +151,36 @@ func ParseExpression(tl *lexing.TokenList, min_bp int) Expression {
 
 		rhs := ParseExpression(tl, r_bp)
 
-		lhs = Expression{
-			Kind:     Infix,
-			Operator: op,
-			Left:     &lhs,
-			Right:    &rhs,
+		left := lhs
+		new_lhs := Expression{
+			Kind: Infix,
+			Operator: Operator{
+				Column: op_tok.Column,
+				Type:   op_tok.Type,
+				Val:    op_tok.Value,
+			},
+			Left:  &left,
+			Right: &rhs,
 		}
+
+		lhs = new_lhs
 	}
 
-	fmt.Println("debug-lhs: " + lhs.String())
 	return lhs
 }
 
+// So Go says: "Only the top-level value gets the Stringer treatment. Everything else gets the default struct formatting."
+// How nice of you, I spend 1-1.5 days doubting if my tree is correct or not
+
 func (e *Expression) String() string {
-	if e.Kind == 0 {
+	switch e.Kind {
+	case Infix:
+		return fmt.Sprintf("(%s %s %s)", e.Operator.Val, e.Left.String(), e.Right.String())
+	case Prefix:
+		return fmt.Sprintf("(%s %s)", e.Operator.Val, e.Right.String())
+	case Postfix:
+		return fmt.Sprintf("(%s %s)", e.Left.String(), e.Operator.Val)
+	default: // __base__ — this is the atom/leaf case
 		return fmt.Sprintf("%v", e.Atom.Val)
 	}
-
-	op := e.Operator.Val
-	left := e.Left.String()
-	right := e.Right.String()
-
-	return fmt.Sprintf("(%s %s %s)", op, left, right)
 }

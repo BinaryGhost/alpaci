@@ -15,6 +15,6 @@ func main() {
 	tl := inp.CreateTokens()
 	expr := evaluators.ParseExpression(&tl, 0)
 
-	fmt.Println(expr)
+	fmt.Println(expr.String())
 
 }

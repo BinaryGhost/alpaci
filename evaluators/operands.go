@@ -17,8 +17,9 @@ const ASSIGN = 0.1
 type ExpressionKind int
 
 const (
-	Infix ExpressionKind = iota
-	Postix
+	__base__ ExpressionKind = iota
+	Infix
+	Postfix
 	Prefix
 )
 

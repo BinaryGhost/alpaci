@@ -149,7 +149,8 @@ func TokTypeAsString(tt TokType) string {
 type TokType int
 
 const (
-	Mult_a TokType = iota
+	__base__ TokType = iota
+	Mult_a
 	Div_a
 	Plus_a
 	Pow_a

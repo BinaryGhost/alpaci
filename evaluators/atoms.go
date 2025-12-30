@@ -58,8 +58,8 @@ func MakeNumberAtom(tl *lexing.TokenList) Atom {
 		actual_number, _ = strconv.ParseInt(before_point, 10, 64)
 		return Atom{
 			Val:    actual_number,
-			Type:   second_tok.Type,
-			Column: second_tok.Column,
+			Type:   first_tok.Type,
+			Column: first_tok.Column,
 		}
 	}
 	tl.Next()
