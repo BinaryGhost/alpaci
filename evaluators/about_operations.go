@@ -1,42 +1,46 @@
 package evaluators
 
-import "math"
+import (
+	"math"
+)
+
+// This is 'fine' for now, as i tried to find and implement a good abstraction, but failed
 
 func Plus(a, b any) any {
 	switch a_val := a.(type) {
-	case int:
-		if b_val, ok := b.(int); ok {
+	case int64:
+		if b_val, ok := b.(int64); ok {
 			return a_val + b_val
 		}
 		if b_val, ok := b.(float64); ok {
 			return float64(a_val) + b_val
 		}
 
-		panic("")
+		panic("a + [b] => Not a number")
 	case float64:
 		if b_val, ok := b.(float64); ok {
 			return a_val + b_val
 		}
-		if b_val, ok := b.(int); ok {
+		if b_val, ok := b.(int64); ok {
 			return a_val + float64(b_val)
 		}
 
-		panic("")
+		panic("a + [b] => Not a number")
 	case string:
 		if b_val, ok := b.(string); ok {
 			return a_val + b_val
 		}
 
-		panic("")
+		panic("a + [b] => For concatenation, 'b' must be a string")
 	default:
-		panic("")
+		panic("[a] => Invalid type for addition... + b")
 	}
 }
 
 func Minus(a, b any) any {
 	switch a_val := a.(type) {
-	case int:
-		if b_val, ok := b.(int); ok {
+	case int64:
+		if b_val, ok := b.(int64); ok {
 			return a_val - b_val
 		}
 		if b_val, ok := b.(float64); ok {
@@ -48,7 +52,7 @@ func Minus(a, b any) any {
 		if b_val, ok := b.(float64); ok {
 			return a_val - b_val
 		}
-		if b_val, ok := b.(int); ok {
+		if b_val, ok := b.(int64); ok {
 			return a_val - float64(b_val)
 		}
 
@@ -59,19 +63,19 @@ func Minus(a, b any) any {
 }
 
 func UnaryMinus(a any) any {
-	if a_val, ok := a.(int); ok {
-		return a_val * -1
+	if a_val, ok := a.(int64); ok {
+		return -a_val
 	}
 
 	if a_val, ok := a.(float64); ok {
-		return a_val * -1
+		return -a_val
 	}
 
 	panic("")
 }
 
 func UnaryPlus(a any) any {
-	if a_val, ok := a.(int); ok {
+	if a_val, ok := a.(int64); ok {
 		return a_val * 1
 	}
 
@@ -84,26 +88,26 @@ func UnaryPlus(a any) any {
 
 func Multiply(a, b any) any {
 	switch a_val := a.(type) {
-	case int:
-		if b_val, ok := b.(int); ok {
+	case int64:
+		if b_val, ok := b.(int64); ok {
 			return a_val * b_val
 		}
 		if b_val, ok := b.(float64); ok {
 			return float64(a_val) * b_val
 		}
 
-		panic("")
+		panic("hi")
 	case float64:
 		if b_val, ok := b.(float64); ok {
 			return a_val * b_val
 		}
-		if b_val, ok := b.(int); ok {
+		if b_val, ok := b.(int64); ok {
 			return a_val * float64(b_val)
 		}
 
-		panic("")
+		panic("he")
 	default:
-		panic("")
+		panic("ho")
 	}
 }
 
@@ -113,8 +117,8 @@ func Divide(a, b any) any {
 	}
 
 	switch a_val := a.(type) {
-	case int:
-		if b_val, ok := b.(int); ok {
+	case int64:
+		if b_val, ok := b.(int64); ok {
 			return float64(a_val) / float64(b_val)
 		}
 		if b_val, ok := b.(float64); ok {
@@ -126,7 +130,7 @@ func Divide(a, b any) any {
 		if b_val, ok := b.(float64); ok {
 			return a_val / b_val
 		}
-		if b_val, ok := b.(int); ok {
+		if b_val, ok := b.(int64); ok {
 			return a_val / float64(b_val)
 		}
 
@@ -142,8 +146,8 @@ func DivideFlat(a, b any) any {
 	}
 
 	switch a_val := a.(type) {
-	case int:
-		if b_val, ok := b.(int); ok {
+	case int64:
+		if b_val, ok := b.(int64); ok {
 			return math.Round(float64(a_val) / float64(b_val))
 		}
 		if b_val, ok := b.(float64); ok {
@@ -155,7 +159,7 @@ func DivideFlat(a, b any) any {
 		if b_val, ok := b.(float64); ok {
 			return math.Round(a_val / b_val)
 		}
-		if b_val, ok := b.(int); ok {
+		if b_val, ok := b.(int64); ok {
 			return math.Round(a_val / float64(b_val))
 		}
 
@@ -171,8 +175,8 @@ func Modulo(a, b any) any {
 	}
 
 	switch a_val := a.(type) {
-	case int:
-		if b_val, ok := b.(int); ok {
+	case int64:
+		if b_val, ok := b.(int64); ok {
 			return a_val % b_val
 		}
 
@@ -184,8 +188,8 @@ func Modulo(a, b any) any {
 
 func Power(a, b any) any {
 	switch a_val := a.(type) {
-	case int:
-		if b_val, ok := b.(int); ok {
+	case int64:
+		if b_val, ok := b.(int64); ok {
 			return math.Pow(float64(a_val), float64(b_val))
 		}
 		if b_val, ok := b.(float64); ok {
@@ -197,7 +201,7 @@ func Power(a, b any) any {
 		if b_val, ok := b.(float64); ok {
 			return math.Pow(a_val, b_val)
 		}
-		if b_val, ok := b.(int); ok {
+		if b_val, ok := b.(int64); ok {
 			return math.Pow(a_val, float64(b_val))
 		}
 
@@ -208,7 +212,7 @@ func Power(a, b any) any {
 }
 
 func Increment(a any) any {
-	if a_val, ok := a.(int); ok {
+	if a_val, ok := a.(int64); ok {
 		return a_val + 1
 	}
 
@@ -220,7 +224,7 @@ func Increment(a any) any {
 }
 
 func Decrement(a any) any {
-	if a_val, ok := a.(int); ok {
+	if a_val, ok := a.(int64); ok {
 		return a_val - 1
 	}
 
@@ -233,8 +237,6 @@ func Decrement(a any) any {
 
 func tryMakeFalsy(val any) bool {
 	if val == "" {
-		return false
-	} else if val == 0 || val == 0.0 {
 		return false
 	} else if vl, ok := val.(bool); ok {
 		return vl
@@ -253,8 +255,8 @@ func Or(a, b any) any {
 
 func GreaterThan(a, b any) any {
 	switch a_val := a.(type) {
-	case int:
-		if b_val, ok := b.(int); ok {
+	case int64:
+		if b_val, ok := b.(int64); ok {
 			return a_val > b_val
 		}
 		if b_val, ok := b.(float64); ok {
@@ -266,7 +268,7 @@ func GreaterThan(a, b any) any {
 		if b_val, ok := b.(float64); ok {
 			return a_val > b_val
 		}
-		if b_val, ok := b.(int); ok {
+		if b_val, ok := b.(int64); ok {
 			return a_val > float64(b_val)
 		}
 
@@ -277,8 +279,8 @@ func GreaterThan(a, b any) any {
 }
 func LesserThan(a, b any) any {
 	switch a_val := a.(type) {
-	case int:
-		if b_val, ok := b.(int); ok {
+	case int64:
+		if b_val, ok := b.(int64); ok {
 			return a_val < b_val
 		}
 		if b_val, ok := b.(float64); ok {
@@ -290,7 +292,7 @@ func LesserThan(a, b any) any {
 		if b_val, ok := b.(float64); ok {
 			return a_val < b_val
 		}
-		if b_val, ok := b.(int); ok {
+		if b_val, ok := b.(int64); ok {
 			return a_val < float64(b_val)
 		}
 
@@ -302,8 +304,8 @@ func LesserThan(a, b any) any {
 
 func Equals(a, b any) any {
 	switch a_val := a.(type) {
-	case int:
-		if b_val, ok := b.(int); ok {
+	case int64:
+		if b_val, ok := b.(int64); ok {
 			return a_val == b_val
 		}
 		if b_val, ok := b.(float64); ok {
@@ -315,7 +317,7 @@ func Equals(a, b any) any {
 		if b_val, ok := b.(float64); ok {
 			return a_val == b_val
 		}
-		if b_val, ok := b.(int); ok {
+		if b_val, ok := b.(int64); ok {
 			return a_val == float64(b_val)
 		}
 
@@ -326,8 +328,8 @@ func Equals(a, b any) any {
 }
 func GreaterThanEquals(a, b any) any {
 	switch a_val := a.(type) {
-	case int:
-		if b_val, ok := b.(int); ok {
+	case int64:
+		if b_val, ok := b.(int64); ok {
 			return a_val >= b_val
 		}
 		if b_val, ok := b.(float64); ok {
@@ -339,7 +341,7 @@ func GreaterThanEquals(a, b any) any {
 		if b_val, ok := b.(float64); ok {
 			return a_val >= b_val
 		}
-		if b_val, ok := b.(int); ok {
+		if b_val, ok := b.(int64); ok {
 			return a_val >= float64(b_val)
 		}
 
@@ -350,8 +352,8 @@ func GreaterThanEquals(a, b any) any {
 }
 func LesserThanEquals(a, b any) any {
 	switch a_val := a.(type) {
-	case int:
-		if b_val, ok := b.(int); ok {
+	case int64:
+		if b_val, ok := b.(int64); ok {
 			return a_val <= b_val
 		}
 		if b_val, ok := b.(float64); ok {
@@ -363,7 +365,7 @@ func LesserThanEquals(a, b any) any {
 		if b_val, ok := b.(float64); ok {
 			return a_val <= b_val
 		}
-		if b_val, ok := b.(int); ok {
+		if b_val, ok := b.(int64); ok {
 			return a_val <= float64(b_val)
 		}
 
@@ -382,8 +384,8 @@ func Not(a any) any {
 
 func NotEquals(a, b any) any {
 	switch a_val := a.(type) {
-	case int:
-		if b_val, ok := b.(int); ok {
+	case int64:
+		if b_val, ok := b.(int64); ok {
 			return a_val != b_val
 		}
 		if b_val, ok := b.(float64); ok {
@@ -395,7 +397,7 @@ func NotEquals(a, b any) any {
 		if b_val, ok := b.(float64); ok {
 			return a_val != b_val
 		}
-		if b_val, ok := b.(int); ok {
+		if b_val, ok := b.(int64); ok {
 			return a_val != float64(b_val)
 		}
 

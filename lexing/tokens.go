@@ -1,15 +1,9 @@
 package lexing
 
-import "fmt"
-
 type Token struct {
 	Type   TokType
 	Value  string
 	Column int
-}
-
-func TokenToString(t Token) string {
-	return fmt.Sprintf("Token {Value: '%s', Type: %s, Column: %d}", t.Value, TokTypeAsString(t.Type), t.Column)
 }
 
 func TokTypeAsString(tt TokType) string {

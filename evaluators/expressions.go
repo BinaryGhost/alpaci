@@ -68,7 +68,7 @@ func Eval(e *Expression) any {
 	}
 }
 
-func ParseExpression(tl *lexing.TokenList, min_bp int) Expression {
+func ParseExpression(tl *lexing.TokenList, min_bp float32) Expression {
 	var lhs Expression
 
 	first_tok, err := tl.Current()
@@ -87,7 +87,7 @@ func ParseExpression(tl *lexing.TokenList, min_bp int) Expression {
 	case lexing.Lparenth:
 		tl.Next()
 
-		lhs = ParseExpression(tl, 0)
+		lhs = ParseExpression(tl, 0.0)
 		if tok, err := tl.Current(); err != nil || tok.Type != lexing.Rparenth {
 			panic("Expected ')'")
 		}
@@ -120,7 +120,7 @@ func ParseExpression(tl *lexing.TokenList, min_bp int) Expression {
 		}
 		// fmt.Printf("debug-op: '%s' \n", lexing.TokTypeAsString(op_tok.Type))
 
-		if op_tok.Type == lexing.EOF {
+		if op_tok.Type == lexing.EOF || op_tok.Type == lexing.Rparenth {
 			break
 		}
 
