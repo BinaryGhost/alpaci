@@ -13,7 +13,8 @@ func main() {
 	inp := lexing.Input(str)
 
 	tl := inp.CreateTokens()
-	expr := evaluators.ParseExpression(&tl, 0.0)
+	zero := 0
+	expr := evaluators.ParseExpression(&tl, 0.0, &zero)
 
 	fmt.Println(expr.String())
 	fmt.Println(evaluators.Eval(&expr))

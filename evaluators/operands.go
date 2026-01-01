@@ -48,7 +48,8 @@ func GetInfixBindingPower(op lexing.Token) (float32, float32) {
 	case lexing.Or_l:
 		return 0.1, 0.05
 	default:
-		panic("Bad infix-operator for " + op.Value)
+		return EMPTY, EMPTY
+		// panic("Bad infix-operator for " + op.Value)
 	}
 }
 

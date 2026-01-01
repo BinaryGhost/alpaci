@@ -68,7 +68,7 @@ func Eval(e *Expression) any {
 	}
 }
 
-func ParseExpression(tl *lexing.TokenList, min_bp float32) Expression {
+func ParseExpression(tl *lexing.TokenList, min_bp float32, parenCount *int) Expression {
 	var lhs Expression
 
 	first_tok, err := tl.Current()
@@ -86,16 +86,22 @@ func ParseExpression(tl *lexing.TokenList, min_bp float32) Expression {
 		lhs = Expression{Atom: MakeNumberAtom(tl)}
 	case lexing.Lparenth:
 		tl.Next()
+		*parenCount++
 
-		lhs = ParseExpression(tl, 0.0)
-		if tok, err := tl.Current(); err != nil || tok.Type != lexing.Rparenth {
+		lhs = ParseExpression(tl, 0.0, parenCount)
+		tok, err := tl.Current()
+		if err != nil || tok.Type != lexing.Rparenth {
 			panic("Expected ')'")
 		}
-
 		tl.Next()
+
+		*parenCount--
+		if *parenCount < 0 {
+			panic("Unexpected ')'")
+		}
 	case lexing.Plus_a, lexing.Minus_a, lexing.Bang_l:
 		_, r_bp := GetPrefixBindingPower(first_tok)
-		rhs := ParseExpression(tl, r_bp)
+		rhs := ParseExpression(tl, r_bp, parenCount)
 
 		op := Operator{
 			Column: first_tok.Column,
@@ -118,10 +124,17 @@ func ParseExpression(tl *lexing.TokenList, min_bp float32) Expression {
 		if err != nil {
 			panic(err)
 		}
-		// fmt.Printf("debug-op: '%s' \n", lexing.TokTypeAsString(op_tok.Type))
 
-		if op_tok.Type == lexing.EOF || op_tok.Type == lexing.Rparenth {
+		if op_tok.Type == lexing.EOF {
 			break
+		}
+
+		if op_tok.Type == lexing.Rparenth {
+			if *parenCount > 0 {
+				break
+			} else {
+				panic("Unexpected ')'")
+			}
 		}
 
 		if l_bp, _ := GetPostfixBindingPower(op_tok.Type); IsPostfixOp(op_tok.Type) {
@@ -149,7 +162,7 @@ func ParseExpression(tl *lexing.TokenList, min_bp float32) Expression {
 
 		tl.Next()
 
-		rhs := ParseExpression(tl, r_bp)
+		rhs := ParseExpression(tl, r_bp, parenCount)
 
 		left := lhs
 		new_lhs := Expression{
