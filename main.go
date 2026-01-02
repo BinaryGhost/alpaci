@@ -14,8 +14,7 @@ func main() {
 
 	tl := inp.CreateTokens()
 
-	var zero int8
-	expr := evaluators.ParseExpression(&tl, 0.0, &zero)
+	expr := evaluators.WrapForExpression(&tl)
 
 	fmt.Println(expr.String())
 	fmt.Println(evaluators.Eval(&expr))

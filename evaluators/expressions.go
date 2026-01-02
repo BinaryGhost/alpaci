@@ -5,6 +5,11 @@ import (
 	"github.com/BinaryGhost/alpaci/lexing"
 )
 
+func WrapForExpression(tl *lexing.TokenList) Expression {
+	var zero int8
+	return ParseExpression(tl, 0.0, &zero)
+}
+
 type Expression struct {
 	Kind     ExpressionKind
 	Operator Operator
