@@ -9,7 +9,7 @@ import (
 func main() {
 
 	// A lil bit peeking
-	str := []rune("i++")
+	str := []rune("(1 + 2)--")
 	inp := lexing.Input(str)
 
 	tl := inp.CreateTokens()

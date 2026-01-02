@@ -120,6 +120,7 @@ func ParseExpression(tl *lexing.TokenList, min_bp float32, parenCount *int8) Exp
 			panic("Unexpected ')'")
 		}
 	case lexing.Plus_a, lexing.Minus_a, lexing.Bang_l:
+		tl.Next()
 		_, r_bp := GetPrefixBindingPower(first_tok)
 		rhs := ParseExpression(tl, r_bp, parenCount)
 
@@ -134,7 +135,6 @@ func ParseExpression(tl *lexing.TokenList, min_bp float32, parenCount *int8) Exp
 			Operator: op,
 			Right:    &rhs,
 		}
-		tl.Next()
 	default:
 		panic("Bad token")
 	}
@@ -213,7 +213,7 @@ func (e *Expression) String() string {
 	case Infix:
 		return fmt.Sprintf("(%s %s %s)", e.Operator.Val, e.Left.String(), e.Right.String())
 	case Prefix:
-		return fmt.Sprintf("(%s %s)", e.Right.String(), e.Operator.Val)
+		return fmt.Sprintf("(%s %s)", e.Operator.Val, e.Right.String())
 	case Postfix:
 		return fmt.Sprintf("(%s %s)", e.Operator.Val, e.Left.String())
 	default:
