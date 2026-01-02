@@ -1,6 +1,7 @@
 package evaluators
 
 import (
+	"fmt"
 	"math"
 )
 
@@ -8,21 +9,9 @@ import (
 
 func Plus(a, b any) any {
 	switch a_val := a.(type) {
-	case int64:
-		if b_val, ok := b.(int64); ok {
-			return a_val + b_val
-		}
-		if b_val, ok := b.(float64); ok {
-			return float64(a_val) + b_val
-		}
-
-		panic("a + [b] => Not a number")
 	case float64:
 		if b_val, ok := b.(float64); ok {
 			return a_val + b_val
-		}
-		if b_val, ok := b.(int64); ok {
-			return a_val + float64(b_val)
 		}
 
 		panic("a + [b] => Not a number")
@@ -39,15 +28,6 @@ func Plus(a, b any) any {
 
 func Minus(a, b any) any {
 	switch a_val := a.(type) {
-	case int64:
-		if b_val, ok := b.(int64); ok {
-			return a_val - b_val
-		}
-		if b_val, ok := b.(float64); ok {
-			return float64(a_val) - b_val
-		}
-
-		panic("")
 	case float64:
 		if b_val, ok := b.(float64); ok {
 			return a_val - b_val
@@ -63,10 +43,6 @@ func Minus(a, b any) any {
 }
 
 func UnaryMinus(a any) any {
-	if a_val, ok := a.(int64); ok {
-		return -a_val
-	}
-
 	if a_val, ok := a.(float64); ok {
 		return -a_val
 	}
@@ -75,10 +51,6 @@ func UnaryMinus(a any) any {
 }
 
 func UnaryPlus(a any) any {
-	if a_val, ok := a.(int64); ok {
-		return a_val * 1
-	}
-
 	if a_val, ok := a.(float64); ok {
 		return a_val * 1
 	}
@@ -88,21 +60,9 @@ func UnaryPlus(a any) any {
 
 func Multiply(a, b any) any {
 	switch a_val := a.(type) {
-	case int64:
-		if b_val, ok := b.(int64); ok {
-			return a_val * b_val
-		}
-		if b_val, ok := b.(float64); ok {
-			return float64(a_val) * b_val
-		}
-
-		panic("hi")
 	case float64:
 		if b_val, ok := b.(float64); ok {
 			return a_val * b_val
-		}
-		if b_val, ok := b.(int64); ok {
-			return a_val * float64(b_val)
 		}
 
 		panic("he")
@@ -117,23 +77,10 @@ func Divide(a, b any) any {
 	}
 
 	switch a_val := a.(type) {
-	case int64:
-		if b_val, ok := b.(int64); ok {
-			return float64(a_val) / float64(b_val)
-		}
-		if b_val, ok := b.(float64); ok {
-			return float64(a_val) / b_val
-		}
-
-		panic("")
 	case float64:
 		if b_val, ok := b.(float64); ok {
 			return a_val / b_val
 		}
-		if b_val, ok := b.(int64); ok {
-			return a_val / float64(b_val)
-		}
-
 		panic("")
 	default:
 		panic("")
@@ -146,21 +93,9 @@ func DivideFlat(a, b any) any {
 	}
 
 	switch a_val := a.(type) {
-	case int64:
-		if b_val, ok := b.(int64); ok {
-			return math.Round(float64(a_val) / float64(b_val))
-		}
-		if b_val, ok := b.(float64); ok {
-			return math.Round(float64(a_val) / b_val)
-		}
-
-		panic("")
 	case float64:
 		if b_val, ok := b.(float64); ok {
 			return math.Round(a_val / b_val)
-		}
-		if b_val, ok := b.(int64); ok {
-			return math.Round(a_val / float64(b_val))
 		}
 
 		panic("")
@@ -175,9 +110,9 @@ func Modulo(a, b any) any {
 	}
 
 	switch a_val := a.(type) {
-	case int64:
-		if b_val, ok := b.(int64); ok {
-			return a_val % b_val
+	case float64:
+		if b_val, ok := b.(float64); ok {
+			return int64(a_val) % int64(b_val)
 		}
 
 		panic("")
@@ -188,21 +123,9 @@ func Modulo(a, b any) any {
 
 func Power(a, b any) any {
 	switch a_val := a.(type) {
-	case int64:
-		if b_val, ok := b.(int64); ok {
-			return math.Pow(float64(a_val), float64(b_val))
-		}
-		if b_val, ok := b.(float64); ok {
-			return math.Pow(float64(a_val), b_val)
-		}
-
-		panic("")
 	case float64:
 		if b_val, ok := b.(float64); ok {
 			return math.Pow(a_val, b_val)
-		}
-		if b_val, ok := b.(int64); ok {
-			return math.Pow(a_val, float64(b_val))
 		}
 
 		panic("")
@@ -212,22 +135,15 @@ func Power(a, b any) any {
 }
 
 func Increment(a any) any {
-	if a_val, ok := a.(int64); ok {
-		return a_val + 1
-	}
-
 	if a_val, ok := a.(float64); ok {
 		return a_val + 1
 	}
 
-	panic("")
+	error := fmt.Sprintf("%v", a)
+	panic("Increment failed -> " + error)
 }
 
 func Decrement(a any) any {
-	if a_val, ok := a.(int64); ok {
-		return a_val - 1
-	}
-
 	if a_val, ok := a.(float64); ok {
 		return a_val - 1
 	}
@@ -255,21 +171,9 @@ func Or(a, b any) any {
 
 func GreaterThan(a, b any) any {
 	switch a_val := a.(type) {
-	case int64:
-		if b_val, ok := b.(int64); ok {
-			return a_val > b_val
-		}
-		if b_val, ok := b.(float64); ok {
-			return float64(a_val) > b_val
-		}
-
-		panic("")
 	case float64:
 		if b_val, ok := b.(float64); ok {
 			return a_val > b_val
-		}
-		if b_val, ok := b.(int64); ok {
-			return a_val > float64(b_val)
 		}
 
 		panic("")
@@ -279,21 +183,9 @@ func GreaterThan(a, b any) any {
 }
 func LesserThan(a, b any) any {
 	switch a_val := a.(type) {
-	case int64:
-		if b_val, ok := b.(int64); ok {
-			return a_val < b_val
-		}
-		if b_val, ok := b.(float64); ok {
-			return float64(a_val) < b_val
-		}
-
-		panic("")
 	case float64:
 		if b_val, ok := b.(float64); ok {
 			return a_val < b_val
-		}
-		if b_val, ok := b.(int64); ok {
-			return a_val < float64(b_val)
 		}
 
 		panic("")
@@ -304,21 +196,9 @@ func LesserThan(a, b any) any {
 
 func Equals(a, b any) any {
 	switch a_val := a.(type) {
-	case int64:
-		if b_val, ok := b.(int64); ok {
-			return a_val == b_val
-		}
-		if b_val, ok := b.(float64); ok {
-			return float64(a_val) == b_val
-		}
-
-		return a == b
 	case float64:
 		if b_val, ok := b.(float64); ok {
 			return a_val == b_val
-		}
-		if b_val, ok := b.(int64); ok {
-			return a_val == float64(b_val)
 		}
 
 		return a == b
@@ -328,21 +208,9 @@ func Equals(a, b any) any {
 }
 func GreaterThanEquals(a, b any) any {
 	switch a_val := a.(type) {
-	case int64:
-		if b_val, ok := b.(int64); ok {
-			return a_val >= b_val
-		}
-		if b_val, ok := b.(float64); ok {
-			return float64(a_val) >= b_val
-		}
-
-		panic("")
 	case float64:
 		if b_val, ok := b.(float64); ok {
 			return a_val >= b_val
-		}
-		if b_val, ok := b.(int64); ok {
-			return a_val >= float64(b_val)
 		}
 
 		panic("")
@@ -352,21 +220,9 @@ func GreaterThanEquals(a, b any) any {
 }
 func LesserThanEquals(a, b any) any {
 	switch a_val := a.(type) {
-	case int64:
-		if b_val, ok := b.(int64); ok {
-			return a_val <= b_val
-		}
-		if b_val, ok := b.(float64); ok {
-			return float64(a_val) <= b_val
-		}
-
-		panic("")
 	case float64:
 		if b_val, ok := b.(float64); ok {
 			return a_val <= b_val
-		}
-		if b_val, ok := b.(int64); ok {
-			return a_val <= float64(b_val)
 		}
 
 		panic("")
@@ -384,21 +240,9 @@ func Not(a any) any {
 
 func NotEquals(a, b any) any {
 	switch a_val := a.(type) {
-	case int64:
-		if b_val, ok := b.(int64); ok {
-			return a_val != b_val
-		}
-		if b_val, ok := b.(float64); ok {
-			return float64(a_val) != b_val
-		}
-
-		return a != b
 	case float64:
 		if b_val, ok := b.(float64); ok {
 			return a_val != b_val
-		}
-		if b_val, ok := b.(int64); ok {
-			return a_val != float64(b_val)
 		}
 
 		return a != b

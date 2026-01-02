@@ -15,60 +15,80 @@ type Expression struct {
 
 func Eval(e *Expression) any {
 	// Since an atom can also be an expression, but with no kind
-	if e.Kind == 0 {
+	if e.Kind == Infix {
+		left := Eval(e.Left)
+		right := Eval(e.Right)
+
+		switch e.Operator.Type {
+		case lexing.Plus_a:
+			if e.Kind == Prefix {
+				return UnaryPlus(right)
+			}
+			return Plus(left, right)
+		case lexing.Minus_a:
+			if e.Kind == Prefix {
+				return UnaryMinus(right)
+			}
+			return Minus(left, right)
+		case lexing.Mult_a:
+			return Multiply(left, right)
+		case lexing.Div_a:
+			return Divide(left, right)
+		case lexing.Divflat_a:
+			return DivideFlat(left, right)
+		case lexing.Pow_a:
+			return Power(left, right)
+		case lexing.Mod_a:
+			return Modulo(left, right)
+		//
+		case lexing.Gthan_l:
+			return GreaterThan(left, right)
+		case lexing.Lthan_l:
+			return LesserThan(left, right)
+		case lexing.GthanEq_l:
+			return GreaterThanEquals(left, right)
+		case lexing.LthanEq_l:
+			return LesserThanEquals(left, right)
+		case lexing.Bang_l:
+			return Not(right)
+		case lexing.Neq_l:
+			return NotEquals(left, right)
+		case lexing.Eq_l:
+			return Equals(left, right)
+		default:
+			panic("Unknown infix-operator '" + e.Operator.Val + "'")
+		}
+
 		// TODO: Handle booleans and strings and identifiers
+	} else if e.Kind == Postfix {
+		left := Eval(e.Left)
+
+		switch e.Operator.Type {
+		case lexing.Inc_a:
+			return Increment(left)
+		case lexing.Decr_a:
+			return Decrement(left)
+		default:
+			panic("Unknown postfix-operator '" + e.Operator.Val + "'")
+		}
+	} else if e.Kind == Prefix {
+		right := Eval(e.Right)
+
+		switch e.Operator.Type {
+		case lexing.Plus_a:
+			return UnaryPlus(right)
+		case lexing.Minus_a:
+			return UnaryMinus(right)
+		default:
+			panic("Unknown prefix-operator '" + e.Operator.Val + "'")
+		}
+	} else {
 		return e.Atom.Val
 	}
 
-	left := Eval(e.Left)
-	right := Eval(e.Right)
-
-	switch e.Operator.Type {
-	case lexing.Plus_a:
-		if e.Kind == Prefix {
-			return UnaryPlus(right)
-		}
-		return Plus(left, right)
-	case lexing.Minus_a:
-		if e.Kind == Prefix {
-			return UnaryMinus(right)
-		}
-		return Minus(left, right)
-	case lexing.Mult_a:
-		return Multiply(left, right)
-	case lexing.Div_a:
-		return Divide(left, right)
-	case lexing.Divflat_a:
-		return DivideFlat(left, right)
-	case lexing.Pow_a:
-		return Power(left, right)
-	case lexing.Mod_a:
-		return Modulo(left, right)
-	case lexing.Inc_a:
-		return Increment(left)
-	case lexing.Decr_a:
-		return Decrement(left)
-	//
-	case lexing.Gthan_l:
-		return GreaterThan(left, right)
-	case lexing.Lthan_l:
-		return LesserThan(left, right)
-	case lexing.GthanEq_l:
-		return GreaterThanEquals(left, right)
-	case lexing.LthanEq_l:
-		return LesserThanEquals(left, right)
-	case lexing.Bang_l:
-		return Not(right)
-	case lexing.Neq_l:
-		return NotEquals(left, right)
-	case lexing.Eq_l:
-		return Equals(left, right)
-	default:
-		panic("Unknown operator '" + e.Operator.Val + "'")
-	}
 }
 
-func ParseExpression(tl *lexing.TokenList, min_bp float32, parenCount *int) Expression {
+func ParseExpression(tl *lexing.TokenList, min_bp float32, parenCount *int8) Expression {
 	var lhs Expression
 
 	first_tok, err := tl.Current()
@@ -143,15 +163,18 @@ func ParseExpression(tl *lexing.TokenList, min_bp float32, parenCount *int) Expr
 			}
 			tl.Next()
 
-			lhs = Expression{
+			left := lhs
+			new_lhs := Expression{
 				Kind: Postfix,
 				Operator: Operator{
 					Column: op_tok.Column,
 					Type:   op_tok.Type,
 					Val:    op_tok.Value,
 				},
-				Left: &lhs,
+				Left: &left,
 			}
+
+			lhs = new_lhs
 			continue
 		}
 
@@ -190,10 +213,10 @@ func (e *Expression) String() string {
 	case Infix:
 		return fmt.Sprintf("(%s %s %s)", e.Operator.Val, e.Left.String(), e.Right.String())
 	case Prefix:
-		return fmt.Sprintf("(%s %s)", e.Operator.Val, e.Right.String())
+		return fmt.Sprintf("(%s %s)", e.Right.String(), e.Operator.Val)
 	case Postfix:
-		return fmt.Sprintf("(%s %s)", e.Left.String(), e.Operator.Val)
-	default: // __base__ — this is the atom/leaf case
+		return fmt.Sprintf("(%s %s)", e.Operator.Val, e.Left.String())
+	default:
 		return fmt.Sprintf("%v", e.Atom.Val)
 	}
 }

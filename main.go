@@ -9,11 +9,12 @@ import (
 func main() {
 
 	// A lil bit peeking
-	str := []rune("(1 + 2) * 3")
+	str := []rune("i++")
 	inp := lexing.Input(str)
 
 	tl := inp.CreateTokens()
-	zero := 0
+
+	var zero int8
 	expr := evaluators.ParseExpression(&tl, 0.0, &zero)
 
 	fmt.Println(expr.String())

@@ -11,7 +11,6 @@ type Type int
 const (
 	Bool Type = iota + 1
 	String
-	Int64
 	Float64
 	// Possibly more...
 )
@@ -38,10 +37,10 @@ func MakeIdentAtom(tl *lexing.TokenList) Atom {
 		// Is 1 for now, but val would be the variable name
 		// variable access not implemented yet
 		return Atom{
-			Val:      1,
+			Val:      1.0,
 			Type:     atom.Type,
 			Column:   atom.Column,
-			RealType: Int64,
+			RealType: Float64,
 		}
 	} else if atom.Type == lexing.False_k || atom.Type == lexing.True_k {
 		return Atom{
@@ -80,12 +79,12 @@ func MakeNumberAtom(tl *lexing.TokenList) Atom {
 	}
 
 	if second_tok.Type != lexing.Point {
-		actual_number, _ = strconv.ParseInt(before_point, 10, 64)
+		actual_number, _ = strconv.ParseFloat(before_point, 64)
 		return Atom{
 			Val:      actual_number,
 			Type:     first_tok.Type,
 			Column:   first_tok.Column,
-			RealType: Int64,
+			RealType: Float64,
 		}
 	}
 	tl.Next()
