@@ -1,9 +1,10 @@
 package evaluators
 
 import (
-	"github.com/BinaryGhost/alpaci/lexing"
 	"strconv"
 	"strings"
+
+	"github.com/BinaryGhost/alpaci/lexing"
 )
 
 type Type int
@@ -24,15 +25,15 @@ type Atom struct {
 
 // Currently only returns 1 as a real value, but would in theory have to access
 // an environment or similiar
-func MakeIdentAtom(tl *lexing.TokenList) Atom {
+func MakeAtom(tl *lexing.TokenList) Atom {
 	atom, err := tl.Current()
 	if err != nil {
 		panic(err)
 	}
 	tl.Next()
 
-	if atom.Type == lexing.Ident {
-
+	switch atom.Type {
+	case lexing.Ident:
 		// TODO
 		// Is 1 for now, but val would be the variable name
 		// variable access not implemented yet
@@ -42,17 +43,26 @@ func MakeIdentAtom(tl *lexing.TokenList) Atom {
 			Column:   atom.Column,
 			RealType: Float64,
 		}
-	} else if atom.Type == lexing.False_k || atom.Type == lexing.True_k {
+
+	case lexing.False_k, lexing.True_k:
 		return Atom{
 			Val:      atom.Type == lexing.True_k,
 			Type:     atom.Type,
 			Column:   atom.Column,
 			RealType: Bool,
 		}
-	} else {
+
+	case lexing.String:
+		return Atom{
+			Val:      atom.Value,
+			Type:     atom.Type,
+			Column:   atom.Column,
+			RealType: String,
+		}
+
+	default:
 		panic("")
 	}
-
 }
 
 // If it can, it will return a float as a number-atom, else an integer-atom

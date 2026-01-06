@@ -51,7 +51,6 @@ func TestNumbers(t *testing.T) {
 			assert.Equal(t, test.expected_value, evaluateExpression(test.input))
 		}
 	})
-
 }
 func TestStrings(t *testing.T)  {}
 func TestBooleans(t *testing.T) {}

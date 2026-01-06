@@ -2,6 +2,8 @@ package lexing
 
 import (
 	"errors"
+	"fmt"
+	"strings"
 	"unicode"
 )
 
@@ -183,7 +185,45 @@ func (input *Input) CreateTokens() TokenList {
 
 		// TODO: Unimplemented -> Implement this
 		case tok == '\'', tok == '"', tok == '`':
-			continue
+			i++
+
+			start_str := i
+			has_cr := false
+
+			for i < ilen && (*input)[i] != tok {
+				i++
+
+				cur_char := (*input)[i]
+
+				if cur_char < 0 {
+					panic("String not properly terminated")
+				}
+
+				if cur_char == '\r' {
+					has_cr = true
+				}
+
+				if cur_char == '\\' && i+1 < ilen && (*input)[i+1] == tok {
+					i++
+				}
+			}
+
+			if i >= ilen {
+				error := fmt.Sprintf("String(%s ... ->%s<-) was never closed", string(tok), string(tok))
+				panic(error)
+			}
+
+			extracted_string := string((*input)[start_str:i])
+			var raw_string string
+
+			if has_cr {
+				raw_string = strings.ReplaceAll(extracted_string, "\r", "")
+			} else {
+				raw_string = extracted_string
+			}
+			tl = append(tl, Token{Type: String, Value: raw_string, Column: start_str})
+			// fmt.Println("raw_string: " + raw_string)
+			i++
 
 		case unicode.IsDigit(tok):
 			start := i

@@ -105,8 +105,9 @@ func ParseExpression(tl *lexing.TokenList, min_bp float32, parenCount *int8) Exp
 	switch first_tok.Type {
 	case lexing.EOF:
 		break
-	case lexing.Ident:
-		lhs = Expression{Atom: MakeIdentAtom(tl)}
+	case lexing.Ident, lexing.String:
+		fmt.Println("please: " + first_tok.Value)
+		lhs = Expression{Atom: MakeAtom(tl)}
 	case lexing.Number:
 		lhs = Expression{Atom: MakeNumberAtom(tl)}
 	case lexing.Lparenth:

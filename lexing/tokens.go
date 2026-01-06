@@ -73,6 +73,8 @@ func TokTypeAsString(tt TokType) string {
 		return "Comma"
 	case Number:
 		return "Number"
+	case String:
+		return "String"
 	case Ident:
 		return "Ident"
 	case Dollar:
@@ -177,6 +179,7 @@ const (
 	Colon
 	Comma
 	Number
+	String
 	Ident
 	Dollar
 	Semicolon
