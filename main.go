@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/BinaryGhost/alpaci/evaluators"
-	"github.com/BinaryGhost/alpaci/lexing"
+	"github.com/BinaryGhost/gospel/evaluators"
+	"github.com/BinaryGhost/gospel/lexing"
 )
 
 func main() {
 
 	// A lil bit peeking
-	str := []rune("'hi' + 'hi'")
+	str := []rune("false or true")
 	inp := lexing.Input(str)
 
 	tl := inp.CreateTokens()

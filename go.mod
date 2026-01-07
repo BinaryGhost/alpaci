@@ -1,4 +1,4 @@
-module github.com/BinaryGhost/alpaci
+module github.com/BinaryGhost/gospel
 
 go 1.24.3
 

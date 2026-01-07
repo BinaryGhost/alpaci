@@ -2,7 +2,7 @@ package evaluators
 
 import (
 	"fmt"
-	"github.com/BinaryGhost/alpaci/lexing"
+	"github.com/BinaryGhost/gospel/lexing"
 )
 
 func WrapForExpression(tl *lexing.TokenList) Expression {
@@ -60,6 +60,10 @@ func Eval(e *Expression) any {
 			return NotEquals(left, right)
 		case lexing.Eq_l:
 			return Equals(left, right)
+		case lexing.Or_l:
+			return Or(left, right)
+		case lexing.And_l:
+			return And(left, right)
 		default:
 			panic("Unknown infix-operator '" + e.Operator.Val + "'")
 		}
@@ -105,8 +109,7 @@ func ParseExpression(tl *lexing.TokenList, min_bp float32, parenCount *int8) Exp
 	switch first_tok.Type {
 	case lexing.EOF:
 		break
-	case lexing.Ident, lexing.String:
-		fmt.Println("please: " + first_tok.Value)
+	case lexing.Ident, lexing.String, lexing.True_k, lexing.False_k:
 		lhs = Expression{Atom: MakeAtom(tl)}
 	case lexing.Number:
 		lhs = Expression{Atom: MakeNumberAtom(tl)}

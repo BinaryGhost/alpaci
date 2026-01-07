@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/BinaryGhost/alpaci/lexing"
+	"github.com/BinaryGhost/gospel/lexing"
 )
 
 type Type int
