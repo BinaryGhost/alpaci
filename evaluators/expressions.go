@@ -20,7 +20,9 @@ type Expression struct {
 
 func Eval(e *Expression) any {
 	// Since an atom can also be an expression, but with no kind
-	if e.Kind == Infix {
+
+	switch e.Kind {
+	case Infix:
 		left := Eval(e.Left)
 		right := Eval(e.Right)
 
@@ -67,9 +69,7 @@ func Eval(e *Expression) any {
 		default:
 			panic("Unknown infix-operator '" + e.Operator.Val + "'")
 		}
-
-		// TODO: Handle booleans and strings and identifiers
-	} else if e.Kind == Postfix {
+	case Postfix:
 		left := Eval(e.Left)
 
 		switch e.Operator.Type {
@@ -80,7 +80,7 @@ func Eval(e *Expression) any {
 		default:
 			panic("Unknown postfix-operator '" + e.Operator.Val + "'")
 		}
-	} else if e.Kind == Prefix {
+	case Prefix:
 		right := Eval(e.Right)
 
 		switch e.Operator.Type {
@@ -88,13 +88,14 @@ func Eval(e *Expression) any {
 			return UnaryPlus(right)
 		case lexing.Minus_a:
 			return UnaryMinus(right)
+		case lexing.Bang_l:
+			return Not(right)
 		default:
 			panic("Unknown prefix-operator '" + e.Operator.Val + "'")
 		}
-	} else {
+	default:
 		return e.Atom.Val
 	}
-
 }
 
 func ParseExpression(tl *lexing.TokenList, min_bp float32, parenCount *int8) Expression {

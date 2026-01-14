@@ -9,7 +9,7 @@ import (
 func main() {
 
 	// A lil bit peeking
-	str := []rune("false or true")
+	str := []rune("!(false and true)")
 	inp := lexing.Input(str)
 
 	tl := inp.CreateTokens()

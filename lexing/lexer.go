@@ -131,17 +131,9 @@ func (input *Input) CreateTokens() TokenList {
 				tl.appendSymbol(Bang_l, "!", &i)
 			}
 		case tok == '|':
-			if input.peekNext(i, '|') {
-				tl.appendSymbol(Or_l, "||", &i)
-			} else {
-				tl.appendSymbol(Pipe, "|", &i)
-			}
+			tl.appendSymbol(Pipe, "|", &i)
 		case tok == '&':
-			if input.peekNext(i, '&') {
-				tl.appendSymbol(And_l, "&&", &i)
-			} else {
-				tl.appendSymbol(And, "&&", &i)
-			}
+			tl.appendSymbol(And, "&", &i)
 		case tok == '<':
 			if input.peekNext(i, '=') {
 				tl.appendSymbol(LthanEq_l, "<=", &i)
@@ -242,11 +234,11 @@ func (input *Input) CreateTokens() TokenList {
 			ident := string((*input)[start:i])
 			switch ident {
 			case "and":
-				tl = append(tl, Token{Type: And_l, Value: "and", Column: start})
+				tl = append(tl, Token{Type: And_l, Value: "&&", Column: start})
 			case "or":
-				tl = append(tl, Token{Type: Or_l, Value: "or", Column: start})
-			case "forc":
-				tl = append(tl, Token{Type: Forc_k, Value: ident, Column: start})
+				tl = append(tl, Token{Type: Or_l, Value: "||", Column: start})
+			case "not":
+				tl = append(tl, Token{Type: Bang_l, Value: "!", Column: start})
 			case "for":
 				tl = append(tl, Token{Type: For_k, Value: ident, Column: start})
 			case "in":
