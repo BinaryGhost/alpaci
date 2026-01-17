@@ -2,7 +2,7 @@ package evaluators
 
 import (
 	"fmt"
-	"github.com/BinaryGhost/gospel/lexing"
+	"github.com/BinaryGhost/gospel/evaluators/lexing"
 )
 
 func WrapForExpression(tl *lexing.TokenList) Expression {

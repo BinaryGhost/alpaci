@@ -3,14 +3,14 @@ package main
 import (
 	"fmt"
 	"github.com/BinaryGhost/gospel/evaluators"
-	"github.com/BinaryGhost/gospel/lexing"
+	elex "github.com/BinaryGhost/gospel/evaluators/lexing"
 )
 
 func main() {
 
 	// A lil bit peeking
 	str := []rune("!(false and true)")
-	inp := lexing.Input(str)
+	inp := elex.Input(str)
 
 	tl := inp.CreateTokens()
 

@@ -1,7 +1,7 @@
 package evaluators
 
 import (
-	"github.com/BinaryGhost/gospel/lexing"
+	"github.com/BinaryGhost/gospel/evaluators/lexing"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
